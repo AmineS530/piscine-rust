@@ -1,5 +1,13 @@
 pub fn capitalize_first(input: &str) -> String {
-    format!("{}{}", (&input[..1].to_string()).to_uppercase(), &input[1..])
+    if input.is_empty() {
+        return String::new();
+    }
+
+    format!(
+        "{}{}",
+        (&input[..1].to_string()).to_uppercase(),
+        &input[1..]
+    )
 }
 
 pub fn title_case(input: &str) -> String {
