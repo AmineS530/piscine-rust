@@ -26,7 +26,7 @@ impl FlagsHandler {
     pub fn add_flag(&mut self, flag: Flag, func: Callback) {
         self.flags.insert(flag.short_hand.clone(), func);
         self.flags.insert(flag.long_hand.clone(), func);
-        // print!("{:?}",self.flags)
+        print!("{:?}",self.flags.keys())
     }
 
     pub fn exec_func(&self, input: &str, argv: &[&str]) -> Result<String, String> {
