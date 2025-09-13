@@ -3,7 +3,7 @@ use chrono::Local;
 // this will be the structure that wil handle the errors
 #[derive(Debug, Eq, PartialEq)]
 pub struct FormError {
-    pub form_values: (String, String),
+    pub form_values: (&'static str, String),
     pub date: String,
     pub err: &'static str,
 }
@@ -11,7 +11,7 @@ pub struct FormError {
 impl FormError {
     pub fn new(field_name: &'static str, field_value: String, err: &'static str) -> Self {
         FormError {
-            form_values: (field_name.to_string(), field_value),
+            form_values: (field_name, field_value),
             date: Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
             err,
         }
