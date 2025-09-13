@@ -16,7 +16,7 @@ pub struct TodoList {
 }
 
 impl TodoList {
-    pub fn get_todo(path: &str) -> Result<TodoList, Box<dyn Error>> {
+    pub fn get_todo(_path: &str) -> Result<TodoList, Box<dyn Error>> {
         todo!()
     }
 }
