@@ -1,4 +1,4 @@
-pub fn score(s: &str) -> String {
+pub fn score(s: &str) -> i32 {
     let mut count = 0;
     for c in s.chars() {
         match c.to_ascii_uppercase() {
@@ -18,5 +18,5 @@ pub fn score(s: &str) -> String {
             _ => count += 0,
         }
     }
-    count.to_string()
+    count
 }
