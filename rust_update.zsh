@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REQUIRED_VERSION="1.75.0"
+REQUIRED_VERSION="1.90.0"
 
 # Function to compare Rust versions
 version_ge() {
