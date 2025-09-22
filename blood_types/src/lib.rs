@@ -7,7 +7,7 @@ pub enum Antigen {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
-enum RhFactor {
+pub enum RhFactor {
 	Positive,
 	Negative,
 }
@@ -18,7 +18,7 @@ pub struct BloodType {
 	pub rh_factor: RhFactor,
 }
 
-use std::cmp::{Ord, Ordering};
+// use std::cmp::{Ord, Ordering};
 
 use std::str::FromStr;
 impl FromStr for Antigen {
@@ -45,24 +45,68 @@ impl FromStr for RhFactor {
     }
 }
 
-impl Ord for BloodType {
-}
+// impl Ord for BloodType {
+// }
 
 impl FromStr for BloodType {
-
+type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (antigen_str, rh_str) = s.split_at(s.len() - 1);
+        Ok(BloodType {
+            antigen: antigen_str.parse()?,
+            rh_factor: rh_str.parse()?,
+        })
+    }
 }
 
 use std::fmt::{self, Debug};
 
 impl Debug for BloodType {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let rh = match self.rh_factor {
+            RhFactor::Positive => "+",
+            RhFactor::Negative => "-",
+        };
+        write!(f, "{:?}{}", self.antigen, rh)
+    }
 }
 
 impl BloodType {
-	pub fn can_receive_from(&self, other: &Self) -> bool {
-	}
+	  pub fn can_receive_from(&self, other: &Self) -> bool {
+        let antigen_ok = matches!(
+            (self.antigen.clone(), other.antigen.clone()),
+            (Antigen::A, Antigen::A | Antigen::O) |
+                (Antigen::B, Antigen::B | Antigen::O) |
+                (Antigen::AB, Antigen::A | Antigen::B | Antigen::AB | Antigen::O) |
+                (Antigen::O, Antigen::O)
+        );
 
-	pub fn donors(&self) -> Vec<Self> {
-	}
+        let rh_ok = self.rh_factor == RhFactor::Positive || other.rh_factor == RhFactor::Negative;
 
-	pub fn recipients(&self) -> Vec<BloodType> {
+        antigen_ok && rh_ok
+    }
+    pub fn donors(&self) -> Vec<Self> {
+        blood_types()
+            .into_iter()
+            .filter(|bt| self.can_receive_from(bt))
+            .collect()
+    }
+    pub fn recipients(&self) -> Vec<BloodType> {
+        blood_types()
+            .into_iter()
+            .filter(|bt| bt.can_receive_from(self))
+            .collect()
+    }
+}
+pub fn blood_types() -> Vec<BloodType> {
+    vec![
+        BloodType { antigen: Antigen::A, rh_factor: RhFactor::Positive },
+        BloodType { antigen: Antigen::A, rh_factor: RhFactor::Negative },
+        BloodType { antigen: Antigen::B, rh_factor: RhFactor::Positive },
+        BloodType { antigen: Antigen::B, rh_factor: RhFactor::Negative },
+        BloodType { antigen: Antigen::AB, rh_factor: RhFactor::Positive },
+        BloodType { antigen: Antigen::AB, rh_factor: RhFactor::Negative },
+        BloodType { antigen: Antigen::O, rh_factor: RhFactor::Positive },
+        BloodType { antigen: Antigen::O, rh_factor: RhFactor::Negative }
+    ]
 }
