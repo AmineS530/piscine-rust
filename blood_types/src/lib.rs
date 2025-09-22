@@ -1,24 +1,24 @@
 #[derive(Debug, PartialEq, Eq, Clone, PartialOrd, Ord)]
 pub enum Antigen {
-	A,
-	AB,
-	B,
-	O,
+    A,
+    AB,
+    B,
+    O,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub enum RhFactor {
-	Positive,
-	Negative,
+    Positive,
+    Negative,
 }
 
 #[derive(PartialEq, Eq, PartialOrd)]
 pub struct BloodType {
-	pub antigen: Antigen,
-	pub rh_factor: RhFactor,
+    pub antigen: Antigen,
+    pub rh_factor: RhFactor,
 }
 
-// use std::cmp::{Ord, Ordering};
+use std::cmp::{Ord, Ordering};
 
 use std::str::FromStr;
 impl FromStr for Antigen {
@@ -45,11 +45,14 @@ impl FromStr for RhFactor {
     }
 }
 
-// impl Ord for BloodType {
-// }
+impl Ord for BloodType {
+    fn cmp(&self, other: &Self) -> Ordering {
+        (&self.antigen, &self.rh_factor).cmp(&(&other.antigen, &other.rh_factor))
+    }
+}
 
 impl FromStr for BloodType {
-type Err = ();
+    type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let (antigen_str, rh_str) = s.split_at(s.len() - 1);
         Ok(BloodType {
@@ -62,7 +65,7 @@ type Err = ();
 use std::fmt::{self, Debug};
 
 impl Debug for BloodType {
-     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let rh = match self.rh_factor {
             RhFactor::Positive => "+",
             RhFactor::Negative => "-",
@@ -72,13 +75,16 @@ impl Debug for BloodType {
 }
 
 impl BloodType {
-	  pub fn can_receive_from(&self, other: &Self) -> bool {
+    pub fn can_receive_from(&self, other: &Self) -> bool {
         let antigen_ok = matches!(
             (self.antigen.clone(), other.antigen.clone()),
-            (Antigen::A, Antigen::A | Antigen::O) |
-                (Antigen::B, Antigen::B | Antigen::O) |
-                (Antigen::AB, Antigen::A | Antigen::B | Antigen::AB | Antigen::O) |
-                (Antigen::O, Antigen::O)
+            (Antigen::A, Antigen::A | Antigen::O)
+                | (Antigen::B, Antigen::B | Antigen::O)
+                | (
+                    Antigen::AB,
+                    Antigen::A | Antigen::B | Antigen::AB | Antigen::O
+                )
+                | (Antigen::O, Antigen::O)
         );
 
         let rh_ok = self.rh_factor == RhFactor::Positive || other.rh_factor == RhFactor::Negative;
@@ -100,13 +106,37 @@ impl BloodType {
 }
 pub fn blood_types() -> Vec<BloodType> {
     vec![
-        BloodType { antigen: Antigen::A, rh_factor: RhFactor::Positive },
-        BloodType { antigen: Antigen::A, rh_factor: RhFactor::Negative },
-        BloodType { antigen: Antigen::B, rh_factor: RhFactor::Positive },
-        BloodType { antigen: Antigen::B, rh_factor: RhFactor::Negative },
-        BloodType { antigen: Antigen::AB, rh_factor: RhFactor::Positive },
-        BloodType { antigen: Antigen::AB, rh_factor: RhFactor::Negative },
-        BloodType { antigen: Antigen::O, rh_factor: RhFactor::Positive },
-        BloodType { antigen: Antigen::O, rh_factor: RhFactor::Negative }
+        BloodType {
+            antigen: Antigen::A,
+            rh_factor: RhFactor::Positive,
+        },
+        BloodType {
+            antigen: Antigen::A,
+            rh_factor: RhFactor::Negative,
+        },
+        BloodType {
+            antigen: Antigen::B,
+            rh_factor: RhFactor::Positive,
+        },
+        BloodType {
+            antigen: Antigen::B,
+            rh_factor: RhFactor::Negative,
+        },
+        BloodType {
+            antigen: Antigen::AB,
+            rh_factor: RhFactor::Positive,
+        },
+        BloodType {
+            antigen: Antigen::AB,
+            rh_factor: RhFactor::Negative,
+        },
+        BloodType {
+            antigen: Antigen::O,
+            rh_factor: RhFactor::Positive,
+        },
+        BloodType {
+            antigen: Antigen::O,
+            rh_factor: RhFactor::Negative,
+        },
     ]
 }
