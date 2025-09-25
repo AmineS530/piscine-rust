@@ -2,7 +2,7 @@ mod scalar;
 
 use scalar::*;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Matrix<T>(pub Vec<Vec<T>>);
 
 impl<T: Scalar<Item = T> + std::clone::Clone> Matrix<T> {
