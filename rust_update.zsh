@@ -30,7 +30,6 @@ if $INSTALL_RUSTUP; then
     source "$HOME/.cargo/env"
     rustup update stable
 fi
-
 # Ensure rust-src for stable
 rustup component add rust-src || true
 
@@ -53,3 +52,4 @@ fi
 
 echo "🎉 Rust setup complete. Restarting shell..."
 exec "$SHELL" -l
+
